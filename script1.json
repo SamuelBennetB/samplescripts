@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-07-01",
+            "name": "demovm",
+            "location": "centralus",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "demovm_disk1_f2626dd5f5204e65bec54d7959463574",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS",
+                            "id": "/subscriptions/5704deba-7f06-4442-a1b4-f2f1f4d38594/resourceGroups/AZUREDEMO/providers/Microsoft.Compute/disks/demovm_disk1_f2626dd5f5204e65bec54d7959463574"
+                        },
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "demovm",
+                    "adminUsername": "demousr",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "/subscriptions/5704deba-7f06-4442-a1b4-f2f1f4d38594/resourceGroups/azuredemo/providers/Microsoft.Network/networkInterfaces/demovmVMNic"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2019-07-01",
+            "name": "demovm/CustomScriptExtension",
+            "location": "centralus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', 'demovm')]"
+            ],
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.9",
+                "settings": {
+                    "fileUris": [
+                        "https://newscript.blob.core.windows.net/script/InstallIIS.ps1?sp=r&se=2020-05-10T11:28:17Z&sv=2019-10-10&sr=b&sig=B5Sap%2FYtgTnVIpjeJt88m03FN3Hzz7XXf2SZZkPMHhA%3D"
+                    ],
+                    "commandToExecute": null
+                },
+                "protectedSettings": {}
+            }
+        }
+    ]
+}
