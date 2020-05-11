@@ -1,0 +1,2 @@
+New-AzResourceGroupDeployment -ResourceGroupName azuredemo1 `
+  -TemplateUri https://raw.githubusercontent.com/SamuelBennetB/samplescripts/master/script1.json
